@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class BoardButtonController : MonoBehaviour
 {
@@ -37,5 +38,12 @@ public class BoardButtonController : MonoBehaviour
     {
         isPause = !isPause;
         pause.SetActive(isPause);
+    }
+
+    public void GetBtn()
+    {
+        GameObject tempBtn = EventSystem.current.currentSelectedGameObject;
+
+        Debug.Log(tempBtn);
     }
 }
