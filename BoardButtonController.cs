@@ -11,6 +11,8 @@ public class BoardButtonController : MonoBehaviour
     [SerializeField] private Image player;
     [SerializeField] private Image PC;
     [SerializeField] private GameObject pause;
+    Image btnImage;
+    private GameObject btns;
 
     private bool isPause = false;
     private Color activeColor = new Color(255f / 255f, 0f, 150f / 255f, 100f / 255f);
@@ -18,6 +20,7 @@ public class BoardButtonController : MonoBehaviour
 
     void Start()
     {
+        btns = GameObject.Find("BtnGroup").gameObject;
         PC.color = activeColor;
         player.color = inactiveColor;
         pause.SetActive(false);
@@ -43,7 +46,25 @@ public class BoardButtonController : MonoBehaviour
     public void GetBtn()
     {
         GameObject tempBtn = EventSystem.current.currentSelectedGameObject;
-
+        
         Debug.Log(tempBtn);
+    }
+    public void Restart()
+    {
+        GamePause();
+        ResetBtn();
+    }
+
+    public void ResetBtn()
+    {
+        int btnLength = btns.transform.childCount;
+        Color newColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0, 2), 100f / 255f);
+        for (int i=0;i<btnLength;i++)
+        {
+            GameObject tempBtns = btns.transform.GetChild(i).gameObject;
+            btnImage = tempBtns.GetComponent<Image>();
+            
+            btnImage.color = newColor;
+        }
     }
 }
