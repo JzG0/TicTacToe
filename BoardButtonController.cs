@@ -14,6 +14,8 @@ public class BoardButtonController : MonoBehaviour
     Image btnImage;
     private GameObject btns;
 
+    GameManager gm;
+
     private bool isPause = false;
     private Color activeColor = new Color(255f / 255f, 0f, 150f / 255f, 100f / 255f);
     private Color inactiveColor = new Color(255f / 255f, 0f, 150f / 255f, 20f / 255f);
@@ -24,6 +26,7 @@ public class BoardButtonController : MonoBehaviour
         PC.color = activeColor;
         player.color = inactiveColor;
         pause.SetActive(false);
+        gm = GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -41,13 +44,17 @@ public class BoardButtonController : MonoBehaviour
     {
         isPause = !isPause;
         pause.SetActive(isPause);
+        gm.isPause = !gm.isPause;
     }
 
     public void GetBtn()
     {
         GameObject tempBtn = EventSystem.current.currentSelectedGameObject;
+        Image image = tempBtn.transform.GetChild(0).GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>("x") as Sprite;
+        image.color = new Color(1, 1, 1, 1f);
         
-        Debug.Log(tempBtn);
+        Debug.Log(image);
     }
     public void Restart()
     {
