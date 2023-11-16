@@ -2,23 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
+public enum State
+{
+    StartGame, //카운트다운, 게임 진행 불가능, 시간 흐르지 않음
+    InGame, //게임 진행 가능, 시간 흐름
+    Setting //게임 진행 불가능, 시간 흐르지 않음
+}
 
 public class GameManager : Manager
 {
     protected static GameManager instance;
-
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI timeUI;
-
     int player;
     int PC;
-    float time;
-    int hh;
-    int mm;
-    int ss;
+
+    [Header("카운트다운")]
+    [SerializeField] private Image countDown;
+    [SerializeField] private GameObject countDownPanel;
+    [SerializeField] private Animator anim;
+    private float time = 3;
+    private bool isTimerUpdate = false;
 
     public List<int> list = new List<int>();
+
+    [SerializeField] private State state;
+
     private void Awake()
     {
         Initialize();
@@ -29,28 +37,64 @@ public class GameManager : Manager
         base.Initialize();
     }
 
-    private void Update()
+    private void Start()
     {
-        time += Time.deltaTime;
-        if (time > 1)
-        {
-            time = 0;
-            ss++;
-            if (ss >= 60)
-            {
-                ss = 0;
-                mm++;
-            }
-            if(mm >= 60)
-            {
-                mm = 0;
-                hh++;
-            }
-            timeUI.text = hh.ToString("D2") + " : " + mm.ToString("D2") + " : " + ss.ToString("D2");
-        }
-        Debug.Log(timeUI.text);
+        isTimerUpdate = true;
+        countDownPanel.SetActive(true);
     }
 
+    private void Update()
+    {
+        Debug.Log(time);
+        switch (state)
+        {
+            case State.StartGame:
+                //카운트다운 진행, 게임 진행 불가능, 인게임 시간 흐르지 않음
+                if (isTimerUpdate)
+                {
+                    anim.SetTrigger("1sec");
+                    time -= Time.deltaTime;
+                    if (time <= 2)
+                    {
+                        countDown.sprite = Resources.Load<Sprite>("UI/2");
+                        anim.SetTrigger("1sec");
+                        if (time <= 1)
+                        {
+                            countDown.sprite = Resources.Load<Sprite>("UI/1");
+                            anim.SetTrigger("1sec");
+                            if (time <= 0)
+                            {
+                                countDownPanel.SetActive(false);
+                                state = State.InGame;
+                                isTimerUpdate = false;
+                            }
+                        }
+                    }
+                }
+                break;
+
+                
+                
+            case State.Setting:
+                //게임 진행 불가능, 시간 흐르지 않음
+                break;
+            case State.InGame:
+                //게임 진행 가능, 시간 흐름
+                break;
+        }
+    }
+    private void InGameMode()
+    {
+        //setting창 끄기
+        //시간 이어서 흐르게 하기
+        
+    }
+    private void ClearGameMode()
+    {
+        //setting창 끄기
+        //시간 0으로 초기화 하기
+        //보드 이미지 초기화 하기
+    }
     private void GameRule()
     {
         #region 가로 빙고
